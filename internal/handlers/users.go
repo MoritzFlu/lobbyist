@@ -64,7 +64,7 @@ func (h *Handlers) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Set the session cookie.
 	http.SetCookie(w, &http.Cookie{
-		Name:     "lpp_user",
+		Name:     "lobbyist_user",
 		Value:    strconv.FormatInt(user.ID, 10),
 		Path:     "/",
 		MaxAge:   30 * 24 * 60 * 60, // 30 days
@@ -80,7 +80,7 @@ func (h *Handlers) HandleLogin(w http.ResponseWriter, r *http.Request) {
 // POST /api/users/logout
 func (h *Handlers) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
-		Name:     "lpp_user",
+		Name:     "lobbyist_user",
 		Value:    "",
 		Path:     "/",
 		MaxAge:   -1,

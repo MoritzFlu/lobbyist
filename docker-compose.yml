@@ -6,8 +6,8 @@ services:
     volumes:
       - ./data:/data
     environment:
-      - LPP_USERS=Alice,Bob,Carol
-      - LPP_PASSWORD=change-me
-      # - LPP_STEAM_CC=de
-      # - LPP_BASE_PATH=/lan
+      - LOBBYIST_USERS=Alice,Bob,Carol
+      - LOBBYIST_PASSWORD=change-me
+      # - LOBBYIST_STEAM_CC=de
+      # - LOBBYIST_BASE_PATH=/lan
     restart: unless-stopped

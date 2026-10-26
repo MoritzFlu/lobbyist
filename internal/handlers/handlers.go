@@ -41,11 +41,11 @@ func (h *Handlers) url(path string) string {
 	return h.BasePath + path
 }
 
-// currentUser reads the "lpp_user" cookie, parses the user ID, and looks up
+// currentUser reads the "lobbyist_user" cookie, parses the user ID, and looks up
 // the user in the database. Returns nil if the cookie is missing, invalid, or
 // the user is not found.
 func (h *Handlers) currentUser(r *http.Request) *db.User {
-	cookie, err := r.Cookie("lpp_user")
+	cookie, err := r.Cookie("lobbyist_user")
 	if err != nil {
 		return nil
 	}

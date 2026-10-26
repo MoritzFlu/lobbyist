@@ -18,12 +18,12 @@ import (
 
 func main() {
 	// Parse flags with environment variable fallbacks.
-	addr := flag.String("addr", getenv("LPP_ADDR", ":8080"), "listen address")
-	dataDir := flag.String("data", getenv("LPP_DATA_DIR", "./data"), "data directory")
-	steamCC := flag.String("cc", getenv("LPP_STEAM_CC", "de"), "Steam country code")
-	users := flag.String("users", getenv("LPP_USERS", ""), "comma-separated initial usernames")
-	sitePass := flag.String("password", getenv("LPP_PASSWORD", ""), "site-wide password (leave empty to disable)")
-	basePath := flag.String("base-path", getenv("LPP_BASE_PATH", ""), "URL base path (e.g. /lan)")
+	addr := flag.String("addr", getenv("LOBBYIST_ADDR", ":8080"), "listen address")
+	dataDir := flag.String("data", getenv("LOBBYIST_DATA_DIR", "./data"), "data directory")
+	steamCC := flag.String("cc", getenv("LOBBYIST_STEAM_CC", "de"), "Steam country code")
+	users := flag.String("users", getenv("LOBBYIST_USERS", ""), "comma-separated initial usernames")
+	sitePass := flag.String("password", getenv("LOBBYIST_PASSWORD", ""), "site-wide password (leave empty to disable)")
+	basePath := flag.String("base-path", getenv("LOBBYIST_BASE_PATH", ""), "URL base path (e.g. /lan)")
 	flag.Parse()
 
 	// Normalize base path: strip trailing slash, ensure leading slash if non-empty.
@@ -39,7 +39,7 @@ func main() {
 	}
 	defer database.Close()
 
-	// Seed initial users from LPP_USERS if no users exist yet.
+	// Seed initial users from LOBBYIST_USERS if no users exist yet.
 	if *users != "" {
 		existingUsers, err := database.ListUsers()
 		if err != nil {
@@ -172,7 +172,7 @@ func getenv(key, fallback string) string {
 	return fallback
 }
 
-// sitePasswordMiddleware checks for a "lpp_gate" cookie whose value matches the
+// sitePasswordMiddleware checks for a "lobbyist_gate" cookie whose value matches the
 // site password. If missing or wrong, it redirects to /gate. Static assets and
 // the /gate endpoint itself are excluded from the check.
 func sitePasswordMiddleware(password, basePath string, next http.Handler) http.Handler {
@@ -185,7 +185,7 @@ func sitePasswordMiddleware(password, basePath string, next http.Handler) http.H
 			return
 		}
 
-		cookie, err := r.Cookie("lpp_gate")
+		cookie, err := r.Cookie("lobbyist_gate")
 		if err != nil || cookie.Value != password {
 			http.Redirect(w, r, basePath+"/gate", http.StatusSeeOther)
 			return

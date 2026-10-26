@@ -14,14 +14,14 @@ type DB struct {
 	*sql.DB
 }
 
-// New opens (or creates) the SQLite database at dataDir/lpp.db, configures
+// New opens (or creates) the SQLite database at dataDir/lobbyist.db, configures
 // WAL mode, foreign keys, and a 5-second busy timeout, then runs migrations.
 func New(dataDir string) (*DB, error) {
 	if err := os.MkdirAll(dataDir, 0o755); err != nil {
 		return nil, fmt.Errorf("create data dir: %w", err)
 	}
 
-	dbPath := filepath.Join(dataDir, "lpp.db")
+	dbPath := filepath.Join(dataDir, "lobbyist.db")
 	sqlDB, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("open database: %w", err)

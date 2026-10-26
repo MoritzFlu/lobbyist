@@ -10,5 +10,5 @@ RUN apk add --no-cache ca-certificates
 COPY --from=build /lobbyist /usr/local/bin/
 EXPOSE 8080
 VOLUME /data
-ENV LPP_DATA_DIR=/data
+ENV LOBBYIST_DATA_DIR=/data
 ENTRYPOINT ["lobbyist"]

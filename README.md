@@ -58,14 +58,14 @@ Every option can be set as a command-line flag or as an environment variable.
 
 | Flag | Environment variable | Default | Description |
 |---|---|---|---|
-| `-addr` | `LPP_ADDR` | `:8080` | Listen address |
-| `-data` | `LPP_DATA_DIR` | `./data` | Directory for the database and cached images |
-| `-users` | `LPP_USERS` | | Comma-separated list of players, only used on first start |
-| `-password` | `LPP_PASSWORD` | | Site-wide password (disabled if empty) |
-| `-cc` | `LPP_STEAM_CC` | `de` | Country code for Steam prices, e.g. `fr` or `at` |
-| `-base-path` | `LPP_BASE_PATH` | | Serve the app under a sub-path, e.g. `/lan` |
+| `-addr` | `LOBBYIST_ADDR` | `:8080` | Listen address |
+| `-data` | `LOBBYIST_DATA_DIR` | `./data` | Directory for the database and cached images |
+| `-users` | `LOBBYIST_USERS` | | Comma-separated list of players, only used on first start |
+| `-password` | `LOBBYIST_PASSWORD` | | Site-wide password (disabled if empty) |
+| `-cc` | `LOBBYIST_STEAM_CC` | `de` | Country code for Steam prices, e.g. `fr` or `at` |
+| `-base-path` | `LOBBYIST_BASE_PATH` | | Serve the app under a sub-path, e.g. `/lan` |
 
-`LPP_USERS` only creates users when the database is still empty.
+`LOBBYIST_USERS` only creates users when the database is still empty.
 To change the player list later, delete the database in the data directory or edit it directly.
 
 The site password is a simple shared secret to keep strangers out.

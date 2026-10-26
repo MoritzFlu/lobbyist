@@ -21,7 +21,7 @@ func (h *Handlers) HandleGateSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name:     "lpp_gate",
+		Name:     "lobbyist_gate",
 		Value:    password,
 		Path:     "/",
 		MaxAge:   86400 * 30, // 30 days
