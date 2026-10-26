@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"lan-party-planner/internal/db"
-	"lan-party-planner/internal/store"
+	"github.com/MoritzFlu/lobbyist/internal/db"
+	"github.com/MoritzFlu/lobbyist/internal/store"
 )
 
 // HandleCustomGameForm returns an empty game_form for adding a game that is

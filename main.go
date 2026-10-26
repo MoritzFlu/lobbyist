@@ -10,10 +10,10 @@ import (
 	"os"
 	"strings"
 
-	"lan-party-planner/internal/db"
-	"lan-party-planner/internal/handlers"
-	"lan-party-planner/internal/hub"
-	"lan-party-planner/web"
+	"github.com/MoritzFlu/lobbyist/internal/db"
+	"github.com/MoritzFlu/lobbyist/internal/handlers"
+	"github.com/MoritzFlu/lobbyist/internal/hub"
+	"github.com/MoritzFlu/lobbyist/web"
 )
 
 func main() {

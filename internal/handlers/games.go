@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"lan-party-planner/internal/db"
-	"lan-party-planner/internal/store"
+	"github.com/MoritzFlu/lobbyist/internal/db"
+	"github.com/MoritzFlu/lobbyist/internal/store"
 )
 
 // HandleIndex renders the main page with the game list.

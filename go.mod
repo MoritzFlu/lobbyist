@@ -1,4 +1,4 @@
-module lan-party-planner
+module github.com/MoritzFlu/lobbyist
 
 go 1.27.0
 

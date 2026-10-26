@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strconv"
 
-	"lan-party-planner/internal/db"
-	"lan-party-planner/internal/hub"
+	"github.com/MoritzFlu/lobbyist/internal/db"
+	"github.com/MoritzFlu/lobbyist/internal/hub"
 )
 
 // Handlers holds shared dependencies for all HTTP handlers.
