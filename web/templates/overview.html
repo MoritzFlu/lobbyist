@@ -1,0 +1,15 @@
+{{define "content"}}
+{{template "header" .}}
+
+<main class="container" hx-ext="sse" sse-connect="{{base}}/events">
+  <!-- Re-fetch the overview whenever anyone votes or adds/removes a game. -->
+  <div
+    id="overview"
+    hx-get="{{base}}/overview"
+    hx-trigger="sse:game-list"
+    hx-swap="innerHTML"
+  >
+    {{template "overview_body" .}}
+  </div>
+</main>
+{{end}}

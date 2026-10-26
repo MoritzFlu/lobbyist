@@ -1,0 +1,61 @@
+{{define "content"}}
+<!-- ─── Header ──────────────────────────────────────── -->
+{{template "header" .}}
+
+<main class="container" hx-ext="sse" sse-connect="{{base}}/events">
+
+  <!-- ─── Add Game ────────────────────────────────────── -->
+  <div class="add-game-bar">
+    <span class="label">+ Add a game</span>
+    <form
+      hx-post="{{base}}/api/games"
+      hx-target="#editor"
+      hx-swap="innerHTML"
+      style="display:contents;"
+    >
+      <input
+        type="text"
+        name="url"
+        class="url-input"
+        placeholder="Paste a Steam or GOG link..."
+        autocomplete="off"
+      >
+      <button type="submit" class="btn-fetch">
+        Fetch
+        <span class="htmx-indicator"><span class="spinner"></span></span>
+      </button>
+    </form>
+    <button
+      type="button"
+      class="btn-cancel btn-custom"
+      hx-get="{{base}}/api/games/custom"
+      hx-target="#editor"
+      hx-swap="innerHTML show:#editor:top"
+    >Not on Steam/GOG?</button>
+  </div>
+  <!-- Add/edit forms. Outside #games-body so live refreshes don't wipe them. -->
+  <div id="editor"></div>
+
+  <!-- ─── Vote Table Header ───────────────────────────── -->
+  <!-- Lives outside #games-body so the filter survives refreshes. -->
+  <div class="queue-head">
+    <h2 class="section-title">Your votes</h2>
+    <div class="queue-switch" role="radiogroup" aria-label="Which games to show">
+      <label><input type="radio" name="queue-filter" id="only-unvoted" checked> Needs my vote</label>
+      <label><input type="radio" name="queue-filter"> All games</label>
+    </div>
+  </div>
+
+  <!-- Re-fetch whenever anyone votes or adds/removes a game. -->
+  <div
+    id="games-body"
+    hx-get="{{base}}/?sort={{.Sort}}&tag={{.ActiveTag}}"
+    hx-trigger="sse:game-list, games-changed from:body"
+    hx-sync="this:replace"
+    hx-swap="innerHTML"
+  >
+    {{template "games_body" .}}
+  </div>
+
+</main>
+{{end}}

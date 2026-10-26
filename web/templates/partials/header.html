@@ -1,0 +1,22 @@
+{{define "header"}}
+<header class="header">
+  <div class="container header-inner">
+    <a href="{{base}}/" class="logo">
+      <span class="logo-icon">&#127922;</span>
+      <span class="logo-text">Lobbyist</span>
+    </a>
+    <nav class="main-nav">
+      <a href="{{base}}/" class="nav-link{{if eq .Page "games"}} active{{end}}">Games</a>
+      <a href="{{base}}/overview" class="nav-link{{if eq .Page "overview"}} active{{end}}">Overview</a>
+    </nav>
+    <div class="user-badge">
+      <span class="user-label">Logged in as</span>
+      <span class="user-name">{{.CurrentUser.Username}}</span>
+      <span class="user-avatar">{{slice .CurrentUser.Username 0 1}}</span>
+      <form method="POST" action="{{base}}/api/users/logout" style="display:inline;margin-left:8px;">
+        <button type="submit" class="btn-logout" title="Logout">&#x2716;</button>
+      </form>
+    </div>
+  </div>
+</header>
+{{end}}

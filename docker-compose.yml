@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - LPP_USERS=Alice,Bob,Carol
+      - LPP_PASSWORD=change-me
+      # - LPP_STEAM_CC=de
+      # - LPP_BASE_PATH=/lan
+    restart: unless-stopped

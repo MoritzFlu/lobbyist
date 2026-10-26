@@ -1,0 +1,71 @@
+{{define "games_body"}}
+<!-- ─── Vote Table: all games ranked by score ───────── -->
+{{if .Ranked}}
+<p class="queue-status">
+  {{if .Unvoted}}
+    <strong>{{.Unvoted}}</strong> game{{if ne .Unvoted 1}}s{{end}} still need{{if eq .Unvoted 1}}s{{end}} your vote.
+  {{else}}
+    You've voted on everything. &#127881;
+  {{end}}
+</p>
+<div class="vote-table-wrap{{if not .Unvoted}} all-voted{{end}}">
+  <table class="overview-table vote-table">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-game">Game</th>
+        <th class="col-num">Score</th>
+        <th class="col-vote">Your vote</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range $i, $g := .Ranked}}
+        {{$v := voteOf $g.Votes $.CurrentUser.ID}}
+        <tr class="{{if $v}}voted{{else}}unvoted{{end}}{{if gt $g.Vetoes 0}} vetoed{{end}}">
+          <td class="col-num col-rank">{{inc $i}}</td>
+          <td class="col-game">
+            <div class="hover-anchor">
+              {{if $g.HeaderImagePath}}
+                <img class="row-thumb" src="{{base}}/images/{{$g.HeaderImagePath}}" alt="">
+              {{end}}
+              <span class="row-title">{{$g.Title}}</span>
+              {{if not $v}}<span class="new-badge">Not voted</span>{{end}}
+              <div class="hover-card">
+                {{template "game_card" dict "Game" $g "CurrentUser" $.CurrentUser "AllUsers" $.AllUsers}}
+              </div>
+            </div>
+          </td>
+          <td class="col-num"><strong>{{$g.Score}}</strong></td>
+          <td class="col-vote">
+            {{template "vote_buttons" dict "GameID" $g.ID "Current" $v "InCard" false}}
+          </td>
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}
+
+<!-- ─── Filter / Sort Bar (applies to the cards below) ─ -->
+<h2 class="section-title">All games</h2>
+<div class="toolbar">
+  <div class="filter-pills">
+    <a href="{{base}}/?sort={{.Sort}}" class="filter-pill{{if not .ActiveTag}} active{{end}}">All</a>
+    {{range .AllTags}}
+    <a href="{{base}}/?sort={{$.Sort}}&tag={{.}}" class="filter-pill{{if eq . $.ActiveTag}} active{{end}}">{{.}}</a>
+    {{end}}
+  </div>
+  <form method="get" action="{{base}}/">
+    {{if .ActiveTag}}<input type="hidden" name="tag" value="{{.ActiveTag}}">{{end}}
+    <select class="sort-select" name="sort" onchange="this.form.submit()">
+      <option value="votes"{{if eq .Sort "votes"}} selected{{end}}>Sort: Most Votes</option>
+      <option value="recent"{{if eq .Sort "recent"}} selected{{end}}>Sort: Recently Added</option>
+      <option value="price_asc"{{if eq .Sort "price_asc"}} selected{{end}}>Sort: Price (Low)</option>
+      <option value="price_desc"{{if eq .Sort "price_desc"}} selected{{end}}>Sort: Price (High)</option>
+    </select>
+  </form>
+</div>
+
+<!-- ─── Game Cards ──────────────────────────────────── -->
+{{template "game_list" .}}
+{{end}}

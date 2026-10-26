@@ -1,0 +1,138 @@
+{{define "game_card"}}
+<article class="game-card{{if gt .Game.Vetoes 0}} vetoed{{end}}{{if not (voteOf .Game.Votes .CurrentUser.ID)}} unvoted{{end}}">
+  <div class="game-thumb">
+    {{if .Game.HeaderImagePath}}
+      <img src="{{base}}/images/{{.Game.HeaderImagePath}}" alt="{{.Game.Title}}">
+    {{end}}
+  </div>
+  <div class="game-body">
+    <!-- Top row: title + price + store badges -->
+    <div class="game-top-row">
+      <span class="game-title">{{.Game.Title}}</span>
+
+      {{if .Game.IsFree}}
+        <span class="price-badge free">Free</span>
+      {{else if and .Game.PriceCents.Valid (gt .Game.DiscountPercent 0)}}
+        <span class="price-badge">
+          <span class="original-price">{{printf "%.2f" (divf .Game.PriceCents.Int64 100)}}€</span>{{printf "%.2f" (divf (discountedPrice .Game.PriceCents.Int64 .Game.DiscountPercent) 100)}}€<span class="discount"> -{{.Game.DiscountPercent}}%</span>
+        </span>
+      {{else if .Game.PriceCents.Valid}}
+        <span class="price-badge">{{printf "%.2f" (divf .Game.PriceCents.Int64 100)}}€</span>
+      {{end}}
+
+      {{if .Game.KeyPriceCents.Valid}}
+        {{if .Game.KeyPriceURL}}
+          <a href="{{.Game.KeyPriceURL}}" target="_blank" rel="noopener" class="price-badge key{{if .Game.HasKeyDeal}} deal{{end}}" title="Key price">&#128273; {{printf "%.2f" (divf .Game.KeyPriceCents.Int64 100)}}€ &#8599;</a>
+        {{else}}
+          <span class="price-badge key{{if .Game.HasKeyDeal}} deal{{end}}" title="Key price">&#128273; {{printf "%.2f" (divf .Game.KeyPriceCents.Int64 100)}}€</span>
+        {{end}}
+      {{end}}
+
+      {{if eq .Game.Source "steam"}}
+        <span class="store-badge">Steam</span>
+      {{else if eq .Game.Source "gog"}}
+        <span class="store-badge gog">GOG</span>
+      {{else if eq .Game.Source "custom"}}
+        <span class="store-badge custom">Custom</span>
+      {{else if .Game.Source}}
+        <span class="store-badge">{{.Game.Source}}</span>
+      {{end}}
+
+      {{if .Game.DRMFree}}
+        <span class="drm-free-badge">DRM-Free</span>
+      {{end}}
+
+      {{if gt .Game.Vetoes 0}}
+        <span class="veto-badge">Vetoed by {{range $i, $v := vetoers .Game.Votes}}{{if $i}}, {{end}}{{$v}}{{end}}</span>
+      {{end}}
+    </div>
+
+    <!-- Description -->
+    {{if .Game.ShortDescription}}
+      <p class="game-desc">{{.Game.ShortDescription}}</p>
+    {{end}}
+
+    <!-- Note -->
+    {{if .Game.Note}}
+      <div class="game-note">{{.Game.Note}}</div>
+    {{end}}
+
+    <!-- Tags -->
+    {{if .Game.Tags}}
+      <div class="tag-row">
+        {{range .Game.Tags}}
+          <span class="tag">{{.Tag}}</span>
+        {{end}}
+      </div>
+    {{end}}
+
+    <!-- Vote Section -->
+    <div class="vote-section">
+      <div class="vote-actions">
+        {{template "vote_buttons" dict "GameID" .Game.ID "Current" (voteOf .Game.Votes .CurrentUser.ID) "InCard" true}}
+
+        <span class="vote-score"><span class="score-num">{{.Game.Score}}</span> pts</span>
+      </div>
+
+      <div class="vote-breakdown">
+        {{range .AllUsers}}
+          {{$v := voteOf $.Game.Votes .ID}}
+          <span class="voter">
+            <span class="voter-name">{{.Username}}</span>
+            {{if $v}}
+              <span class="voter-state">{{voteIcon $v}}</span>
+            {{else}}
+              <span class="voter-state none">&mdash;</span>
+            {{end}}
+          </span>
+        {{end}}
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <span>Added by {{.Game.AddedByName}}</span>
+      <div class="card-footer-actions">
+        {{if .Game.StoreURL}}
+          <a href="{{.Game.StoreURL}}" target="_blank" rel="noopener" class="btn-store">Store &#8599;</a>
+        {{end}}
+        <button
+          class="btn-store"
+          hx-get="{{base}}/api/games/{{.Game.ID}}/edit"
+          hx-target="#editor"
+          hx-swap="innerHTML show:#editor:top"
+        >Edit</button>
+        <button
+          class="btn-delete"
+          hx-delete="{{base}}/api/games/{{.Game.ID}}"
+          hx-target="closest .game-card"
+          hx-swap="outerHTML"
+          hx-confirm="Remove this game?"
+        >Remove</button>
+      </div>
+    </div>
+  </div>
+</article>
+{{end}}
+
+{{/* Vote buttons, one per vote type. Clicking the active vote clears it.
+     In a card the response swaps the card; elsewhere (vote table) nothing is
+     swapped and the HX-Trigger response header refreshes the games body. */}}
+{{define "vote_buttons"}}
+<div class="vote-buttons">
+  {{range voteOptions}}
+    <button
+      class="vote-btn vote-{{.Type}}{{if eq $.Current .Type}} active{{end}}"
+      title="{{.Title}}"
+      hx-post="{{base}}/api/games/{{$.GameID}}/vote"
+      hx-vals='{"type":"{{if eq $.Current .Type}}none{{else}}{{.Type}}{{end}}"}'
+      {{if $.InCard}}
+        hx-target="closest .game-card"
+        hx-swap="outerHTML"
+      {{else}}
+        hx-swap="none"
+      {{end}}
+    >{{.Icon}}</button>
+  {{end}}
+</div>
+{{end}}

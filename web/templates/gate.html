@@ -1,0 +1,25 @@
+{{define "content"}}
+<div class="login-page">
+  <div class="login-card">
+    <span class="login-icon">&#128274;</span>
+    <h1 class="login-title">Lobbyist</h1>
+    <p class="login-subtitle">Enter the party password</p>
+
+    {{if .Error}}
+      <div class="flash-error">Wrong password, try again.</div>
+    {{end}}
+
+    <form method="POST" action="{{base}}/gate" class="gate-form">
+      <input
+        type="password"
+        name="password"
+        class="pin-input"
+        placeholder="Password"
+        autocomplete="off"
+        autofocus
+      >
+      <button type="submit" class="btn-fetch" style="width:100%;margin-top:12px;">Enter</button>
+    </form>
+  </div>
+</div>
+{{end}}

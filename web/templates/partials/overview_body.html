@@ -1,0 +1,81 @@
+{{define "overview_body"}}
+<!-- ─── People Summary ──────────────────────────────── -->
+<h2 class="section-title">People</h2>
+<div class="people-grid">
+  {{range .Summaries}}
+  <div class="person-card">
+    <div class="person-head">
+      <span class="user-avatar">{{slice .Username 0 1}}</span>
+      <span class="person-name">{{.Username}}</span>
+    </div>
+    <div class="person-stats">
+      <span class="person-stat" title="Must play">{{voteIcon "must_play"}} {{.MustPlays}}</span>
+      <span class="person-stat" title="Thumbs up">{{voteIcon "up"}} {{.Ups}}</span>
+      <span class="person-stat" title="Neutral">{{voteIcon "neutral"}} {{.Neutrals}}</span>
+      <span class="person-stat" title="Thumbs down">{{voteIcon "down"}} {{.Downs}}</span>
+      <span class="person-stat" title="Vetoes">{{voteIcon "veto"}} {{.Vetoes}}</span>
+    </div>
+    <div class="person-added">{{.GamesAdded}} game{{if ne .GamesAdded 1}}s{{end}} added</div>
+  </div>
+  {{end}}
+</div>
+
+<!-- ─── Games Table ─────────────────────────────────── -->
+<h2 class="section-title">Games</h2>
+{{if .Games}}
+<div class="table-scroll">
+  <table class="overview-table">
+    <thead>
+      <tr>
+        <th class="col-game">Game</th>
+        <th class="col-num">Price</th>
+        <th class="col-num">Score</th>
+        {{range .AllUsers}}
+          <th class="col-vote">{{.Username}}</th>
+        {{end}}
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Games}}
+        {{$game := .}}
+        <tr{{if gt .Vetoes 0}} class="vetoed"{{end}}>
+          <td class="col-game">
+            {{if .StoreURL}}
+              <a href="{{.StoreURL}}" target="_blank" rel="noopener">{{.Title}}</a>
+            {{else}}
+              {{.Title}}
+            {{end}}
+          </td>
+          <td class="col-num">
+            {{if .IsFree}}
+              <span class="price-badge free">Free</span>
+            {{else if .HasKeyDeal}}
+              <span title="Key price">&#128273; {{printf "%.2f" (divf .KeyPriceCents.Int64 100)}}€</span>
+            {{else if and .PriceCents.Valid (gt .DiscountPercent 0)}}
+              {{printf "%.2f" (divf (discountedPrice .PriceCents.Int64 .DiscountPercent) 100)}}€
+            {{else if .PriceCents.Valid}}
+              {{printf "%.2f" (divf .PriceCents.Int64 100)}}€
+            {{else}}
+              <span class="cell-none">&mdash;</span>
+            {{end}}
+          </td>
+          <td class="col-num"><strong>{{.Score}}</strong></td>
+          {{range $.AllUsers}}
+            {{$v := voteOf $game.Votes .ID}}
+            <td class="col-vote">
+              {{if $v}}<span title="{{$v}}">{{voteIcon $v}}</span>
+              {{else}}<span class="cell-none">&mdash;</span>{{end}}
+            </td>
+          {{end}}
+        </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+  <div class="empty-state">
+    <span class="empty-state-icon">&#127918;</span>
+    <p class="empty-state-text">No games yet! Add some on the Games page.</p>
+  </div>
+{{end}}
+{{end}}

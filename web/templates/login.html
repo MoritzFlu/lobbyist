@@ -1,0 +1,35 @@
+{{define "content"}}
+<div class="login-page">
+  <div class="login-card">
+    <span class="login-icon">&#127922;</span>
+    <h1 class="login-title">Lobbyist</h1>
+    <p class="login-subtitle">Who are you?</p>
+
+    <div id="login-area">
+      <div class="user-list">
+        {{range .Users}}
+        <button
+          class="user-btn"
+          {{if eq .Pin ""}}
+            hx-post="{{base}}/api/users/login"
+            hx-vals='{"user_id": "{{.ID}}"}'
+            hx-swap="none"
+            hx-on::after-request="if(event.detail.successful) window.location.href='{{base}}/'"
+          {{else}}
+            hx-get="{{base}}/api/users/{{.ID}}/pin-form"
+            hx-target="#login-area"
+            hx-swap="innerHTML"
+          {{end}}
+        >
+          {{.Username}}
+        </button>
+        {{end}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded",function(){if(Math.random()<0.1){setTimeout(function(){window.location.href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"},1500)}});
+</script>
+{{end}}

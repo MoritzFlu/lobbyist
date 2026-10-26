@@ -1,0 +1,14 @@
+{{define "game_list"}}
+<div class="game-grid">
+  {{if .Games}}
+    {{range .Games}}
+      {{template "game_card" dict "Game" . "CurrentUser" $.CurrentUser "AllUsers" $.AllUsers}}
+    {{end}}
+  {{else}}
+    <div class="empty-state">
+      <span class="empty-state-icon">&#127918;</span>
+      <p class="empty-state-text">No games yet! Paste a Steam or GOG link above to add one.</p>
+    </div>
+  {{end}}
+</div>
+{{end}}

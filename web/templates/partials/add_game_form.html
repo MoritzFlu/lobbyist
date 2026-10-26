@@ -1,0 +1,90 @@
+{{define "add_game_form"}}
+<div class="preview-card">
+  <div class="preview-header">Game Preview &mdash; Review before adding</div>
+  <form hx-post="{{base}}/api/games/confirm" hx-target="closest .preview-card" hx-swap="outerHTML">
+    <div class="preview-body">
+
+      {{if .HeaderImageURL}}
+        <img src="{{.HeaderImageURL}}" alt="{{.Title}}" class="preview-thumb">
+      {{end}}
+
+      <div class="preview-row">
+        <label class="preview-label">Title</label>
+        <input type="text" name="title" value="{{.Title}}" class="preview-input">
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">Description</label>
+        <textarea name="short_description" class="preview-textarea" rows="3">{{.ShortDescription}}</textarea>
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">Price</label>
+        <div style="display:flex;gap:10px;align-items:center;">
+          {{if .IsFree}}
+            <span class="price-badge free">Free</span>
+          {{else if .PriceCents}}
+            <span class="price-badge">{{printf "%.2f" (divf .PriceCents 100)}}€</span>
+          {{end}}
+          {{if gt .DiscountPercent 0}}
+            <span class="price-badge"><span class="discount">-{{.DiscountPercent}}%</span></span>
+          {{end}}
+        </div>
+      </div>
+
+      <div class="preview-grid">
+        <div class="preview-row">
+          <label class="preview-label">&#128273; Key price (€, optional)</label>
+          <input type="text" name="key_price" class="preview-input" inputmode="decimal" placeholder="if cheaper as a key">
+        </div>
+        <div class="preview-row">
+          <label class="preview-label">Key shop link</label>
+          <input type="url" name="key_price_url" class="preview-input" placeholder="https://...">
+        </div>
+      </div>
+
+      {{if .Tags}}
+        <div class="preview-row">
+          <label class="preview-label">Tags</label>
+          <div class="preview-tags">
+            {{range .Tags}}
+              <span class="tag">{{.}}</span>
+            {{end}}
+          </div>
+        </div>
+      {{end}}
+
+      <div class="preview-row">
+        <label class="preview-label">Note (optional)</label>
+        <textarea name="note" class="preview-textarea" rows="2" placeholder="Any notes for the group..."></textarea>
+      </div>
+
+      <!-- Hidden fields for store metadata -->
+      <input type="hidden" name="source" value="{{.Source}}">
+      <input type="hidden" name="store_product_id" value="{{.StoreProductID}}">
+      <input type="hidden" name="header_image_url" value="{{.HeaderImageURL}}">
+      <input type="hidden" name="store_url" value="{{.StoreURL}}">
+      <input type="hidden" name="is_free" value="{{.IsFree}}">
+      <input type="hidden" name="price_cents" value="{{if .PriceCents}}{{.PriceCents}}{{end}}">
+      <input type="hidden" name="currency" value="{{.Currency}}">
+      <input type="hidden" name="discount_percent" value="{{.DiscountPercent}}">
+      <input type="hidden" name="drm_free" value="{{.DRMFree}}">
+      <input type="hidden" name="release_date" value="{{.ReleaseDate}}">
+      <input type="hidden" name="has_windows" value="{{.HasWindows}}">
+      <input type="hidden" name="has_linux" value="{{.HasLinux}}">
+      <input type="hidden" name="has_mac" value="{{.HasMac}}">
+      {{range .Genres}}
+        <input type="hidden" name="genres" value="{{.}}">
+      {{end}}
+      {{range .Tags}}
+        <input type="hidden" name="tags" value="{{.}}">
+      {{end}}
+
+      <div class="preview-actions">
+        <button type="submit" class="btn-confirm">Confirm &amp; Add</button>
+        <button type="button" class="btn-cancel" onclick="this.closest('.preview-card').remove()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}

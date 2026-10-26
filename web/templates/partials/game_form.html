@@ -1,0 +1,80 @@
+{{define "game_form"}}
+{{/* Add-custom / edit form. Data: Game (ID 0 = new custom game), Error. */}}
+{{$custom := eq .Game.Source "custom"}}
+<div class="preview-card">
+  <div class="preview-header">
+    {{if .Game.ID}}Edit &ldquo;{{.Game.Title}}&rdquo;{{else}}Add a custom game{{end}}
+  </div>
+  <form
+    {{if .Game.ID}}hx-post="{{base}}/api/games/{{.Game.ID}}"{{else}}hx-post="{{base}}/api/games/custom"{{end}}
+    hx-target="closest .preview-card"
+    hx-swap="outerHTML"
+  >
+    <div class="preview-body">
+      {{if .Error}}<div class="flash-error">{{.Error}}</div>{{end}}
+
+      {{if .Game.HeaderImagePath}}
+        <img src="{{base}}/images/{{.Game.HeaderImagePath}}" alt="{{.Game.Title}}" class="preview-thumb">
+      {{end}}
+
+      <div class="preview-row">
+        <label class="preview-label">Title</label>
+        <input type="text" name="title" value="{{.Game.Title}}" class="preview-input" required>
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">Description</label>
+        <textarea name="short_description" class="preview-textarea" rows="3">{{.Game.ShortDescription}}</textarea>
+      </div>
+
+      {{if $custom}}
+        <div class="preview-grid">
+          <div class="preview-row">
+            <label class="preview-label">Price (€)</label>
+            <input type="text" name="price" value="{{priceInput .Game.PriceCents}}" class="preview-input" inputmode="decimal" placeholder="e.g. 9.99">
+          </div>
+          <label class="preview-check">
+            <input type="checkbox" name="is_free"{{if .Game.IsFree}} checked{{end}}> Free to play
+          </label>
+        </div>
+      {{end}}
+
+      <div class="preview-grid">
+        <div class="preview-row">
+          <label class="preview-label">&#128273; Key price (€)</label>
+          <input type="text" name="key_price" value="{{priceInput .Game.KeyPriceCents}}" class="preview-input" inputmode="decimal" placeholder="leave empty for none">
+        </div>
+        <div class="preview-row">
+          <label class="preview-label">Key shop link</label>
+          <input type="url" name="key_price_url" value="{{.Game.KeyPriceURL}}" class="preview-input" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">{{if $custom}}Website / store link{{else}}Store link{{end}}</label>
+        <input type="url" name="store_url" value="{{.Game.StoreURL}}" class="preview-input" placeholder="https://...">
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">{{if .Game.HeaderImagePath}}Replace image (URL){{else}}Image URL{{end}}</label>
+        <input type="url" name="image_url" class="preview-input" placeholder="https://.../header.jpg">
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">Tags (comma-separated)</label>
+        <input type="text" name="tags" value="{{tagList .Game.Tags}}" class="preview-input" placeholder="Co-op, Shooter">
+      </div>
+
+      <div class="preview-row">
+        <label class="preview-label">Note (optional)</label>
+        <textarea name="note" class="preview-textarea" rows="2" placeholder="Any notes for the group...">{{.Game.Note}}</textarea>
+      </div>
+
+      <div class="preview-actions">
+        <button type="submit" class="btn-confirm">{{if .Game.ID}}Save{{else}}Add game{{end}}</button>
+        <button type="button" class="btn-cancel" onclick="this.closest('.preview-card').remove()">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}
